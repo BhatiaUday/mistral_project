@@ -1,6 +1,7 @@
 from fastapi import FastAPI, HTTPException, Header, Request, BackgroundTasks
 from fastapi.responses import JSONResponse
 import logging
+from datetime import datetime
 from app.config import get_settings, configure_logging
 from app.services.github_service import GitHubService
 from app.services.mistral_service import MistralService
@@ -82,3 +83,20 @@ async def service_status():
         "model": settings.mistral_model,
         "version": "1.0.0"
     }
+
+@app.get("/models/status")
+async def model_status():
+    """Get the current status of all Mistral models including rate limiting info"""
+    try:
+        model_status = mistral_service.get_current_model_status()
+        return {
+            "status": "success",
+            "timestamp": datetime.now().isoformat(),
+            **model_status
+        }
+    except Exception as e:
+        logger.error(f"Error getting model status: {e}")
+        return {
+            "status": "error",
+            "error": str(e)
+        }

@@ -112,7 +112,7 @@ az containerapp create \
         APP_PORT=8080 \
         LOG_LEVEL=INFO \
     --cpu 0.25 --memory 0.5Gi \
-    --min-replicas 0 --max-replicas 3 \
+    --min-replicas 1 --max-replicas 5 \
     --output none
 
 # Get the application URL

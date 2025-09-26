@@ -27,9 +27,16 @@ class ReviewService:
                 
                 # Convert to review comments
                 for item in analysis:
+                    # Ensure line_number is an integer, not a list
+                    line_num = item.get("line_number", 1)
+                    if isinstance(line_num, list) and line_num:
+                        line_num = line_num[0]  # Take first element if it's a list
+                    if not isinstance(line_num, int):
+                        line_num = 1  # Default fallback
+                    
                     comment = ReviewComment(
                         file_path=diff["filename"],
-                        line_number=item.get("line_number", 1),
+                        line_number=line_num,
                         comment=self._format_comment(item),
                         severity=SeverityLevel(item.get("severity", "info")),
                         suggestion=item.get("suggestion")
